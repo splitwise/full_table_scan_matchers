@@ -3,13 +3,17 @@ require 'ostruct'
 module FullTableScanMatchers
   module DBAdapters
     module MySql
-      class ExplainResult
+      class LazyExplainResult
         attr_accessor :sql_statement, :structs, :backtrace, :tables
 
         def initialize(sql_statement, backtrace: nil, tables: nil)
           @sql_statement = sql_statement
           @backtrace     = backtrace
           @tables        = tables
+        end
+
+        def force
+          explained_result
         end
 
         def full_table_scan?

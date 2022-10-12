@@ -6,7 +6,7 @@ describe FullTableScanMatchers::SQLWatcher do
 
   describe "#callback" do
     let(:make_callback) { watcher.callback :foo, :bar, :biz, :baz, {sql: sql} }
-    let(:last_logged)   { watcher.log.last.try :[], :sql }
+    let(:last_logged)   { watcher.log.last.try(:sql_statement) }
 
     describe "with a SELECT statement" do
       let(:sql) { "SELECT * FROM users" }

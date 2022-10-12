@@ -40,15 +40,13 @@ RSpec::Matchers.define :full_table_scan do |options = {}|
     @watcher = FullTableScanMatchers::SQLWatcher.new(watcher_option)
     ActiveSupport::Notifications.subscribed @watcher.to_proc, 'sql.active_record', &block
 
-    replay_logged_with_explain!
+    filter_explain_log!
 
     @watcher.count > 0
   end
 
-  def replay_logged_with_explain!
-    @watcher.log
-      .map!    { |logged| FullTableScanMatchers.configuration.adapter::ExplainResult.new(logged[:sql], backtrace: logged[:backtrace], tables: @tables) }
-      .reject! { |logged| !logged.full_table_scan? }
+  def filter_explain_log!
+    @watcher.log.select!(&:full_table_scan?)
   end
 
   def output_offenders

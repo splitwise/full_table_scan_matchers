@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe FullTableScanMatchers::DBAdapters::MySql::ExplainResult  do
+describe FullTableScanMatchers::DBAdapters::MySql::LazyExplainResult  do
   let(:connection) { double ActiveRecord::ConnectionAdapters::AbstractAdapter, explain: explain_table }
   before           { allow(ActiveRecord::Base).to receive(:connection).and_return connection }
   let(:sql)        { "SELECT * FROM posts WHERE posts.user_id = ?" }
