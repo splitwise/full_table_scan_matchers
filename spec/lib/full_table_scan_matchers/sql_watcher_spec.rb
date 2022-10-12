@@ -20,6 +20,21 @@ describe FullTableScanMatchers::SQLWatcher do
         expect(last_logged).to eq sql
       end
 
+      context "when eager mode is enabled" do
+        let(:options) { {eager: true} }
+
+        before { allow(FullTableScanMatchers.configuration).to receive(:eager).and_return(true) }
+
+        it "executes the EXPLAIN immediately" do
+          lazy_result_class = FullTableScanMatchers.configuration.adapter::LazyExplainResult
+          lazy_result_double = instance_double(lazy_result_class)
+          allow(lazy_result_class).to receive(:new).and_return(lazy_result_double)
+          expect(lazy_result_double).to receive(:force)
+
+          make_callback
+        end
+      end
+
       context "that doesn't match the tables option" do
         let(:options) { {tables: :posts} }
 
@@ -42,11 +57,11 @@ describe FullTableScanMatchers::SQLWatcher do
     describe "with a EXPLAIN SELECT statement" do
       let(:sql) { "EXPLAIN SELECT * FROM users" }
 
-      it "increments the counter" do
+      it "does not increment the counter" do
         expect { make_callback }.not_to change { watcher.count }
       end
 
-      it "logs the statement" do
+      it "does not log the statement" do
         make_callback
         expect(last_logged).to be_nil
       end

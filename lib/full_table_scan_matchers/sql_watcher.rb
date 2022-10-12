@@ -39,9 +39,12 @@ module FullTableScanMatchers
         nil
       end
 
-      @log << FullTableScanMatchers.configuration.adapter::LazyExplainResult.new(
+      result = FullTableScanMatchers.configuration.adapter::LazyExplainResult.new(
         sql_statement, backtrace: backtrace, tables: options[:tables],
       )
+      result.force if FullTableScanMatchers.configuration.eager
+
+      @log << result
     end
 
     def count

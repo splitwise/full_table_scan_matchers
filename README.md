@@ -63,6 +63,10 @@ FullTableScanMatchers.configure do |config|
   # Add a proc to strip things from the logged backtraces
   # Default: None
   config.backtrace_filter = Proc.new { |backtrace| backtrace }
+
+  # Run EXPLAIN on each SELECT statement immediately after it is executed
+  # Default: false
+  config.eager = false
 end
 ```
 

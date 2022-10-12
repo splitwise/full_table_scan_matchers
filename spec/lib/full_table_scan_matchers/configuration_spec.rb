@@ -9,6 +9,7 @@ describe FullTableScanMatchers::Configuration do
       expect(configuration.adapter).to          eq FullTableScanMatchers::DBAdapters::MySql
       expect(configuration.log_backtrace).to    eq false
       expect(configuration.backtrace_filter).to be_a Proc
+      expect(configuration.eager).to            eq false
     end
   end
 end
