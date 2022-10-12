@@ -76,6 +76,28 @@ STRING
     end
   end
 
+  describe "example using a materialized subquery" do
+    let(:explain_table) do
+      <<-TEXT
+        +----+--------------+--------------+------+------------------------+------------------------+---------+-------+------+-------------+
+        | id | select_type  | table        | type | possible_keys          | key                    | key_len | ref   | rows | Extra       |
+        +----+--------------+--------------+-------------------------------+------------------------+---------+-------+------+-------------+
+        |  1 | SIMPLE       | <subquery2>  | ALL  | NULL                   | NULL                   | NULL    | NULL  | NULL | NULL        |
+        |  2 | MATERIALIZED | posts        | ref  | index_posts_on_user_id | index_posts_on_user_id | 4       | const |    1 | Using where |
+        +----+--------------+--------------+------+------------------------+------------------------+---------+-------+--------------------+
+        1 row in set (0.00 sec)
+      TEXT
+    end
+
+    it { should be_full_table_scan }
+
+    context "when ignoring materialized subqueries" do
+      before { allow(FullTableScanMatchers.configuration).to receive(:ignore_materialized).and_return(true) }
+
+      it { should_not be_full_table_scan }
+    end
+  end
+
   describe "with a complex query" do
     let(:explain_table) do
       <<-TEXT

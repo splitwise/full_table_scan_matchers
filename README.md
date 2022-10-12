@@ -67,6 +67,10 @@ FullTableScanMatchers.configure do |config|
   # Run EXPLAIN on each SELECT statement immediately after it is executed
   # Default: false
   config.eager = false
+
+  # Ignore full table scan on materialized subquery tables
+  # Default: false
+  config.ignore_materialized = false
 end
 ```
 

@@ -40,6 +40,7 @@ module FullTableScanMatchers
         def offending_structs
           structs
             .reject  { |struct| struct.table == "NULL" }
+            .reject  { |struct| struct.table.match?(/<subquery\d+>/) if FullTableScanMatchers.configuration.ignore_materialized }
             .select  { |struct| tables.nil? || Array(tables).map(&:to_s).include?(struct.table) }
             .select  { |struct| struct.key == "NULL" && struct.possible_keys == "NULL" }
         end
